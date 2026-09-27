@@ -216,7 +216,9 @@ class ImageResult(BaseImageResult):
             except (io.UnsupportedOperation, AttributeError):
                 # PIL needs file objects with seek
                 self._buf = BytesIO(self._buf.read())
-        return cast(Union[BytesIO, 'ReadBufWrapper'], self._buf)
+        # no cast() here: building Union[..., 'ReadBufWrapper'] on every call is
+        # measurably slow on the hot path for serving cached tiles
+        return self._buf  # type: ignore[return-value]
 
     def as_buffer(self, image_opts=None, format: Optional[str] = None, seekable: bool = False) ->\
             Union[IO[bytes], 'ReadBufWrapper']:
