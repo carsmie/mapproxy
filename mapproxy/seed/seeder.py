@@ -131,7 +131,7 @@ class TileWorkerPool(object):
 class TileWorker(proc_class):
     def __init__(self, task, tiles_queue, conf):
         super().__init__()
-        proc_class.daemon = True
+        self.daemon = True
         self.task = task
         self.tile_mgr = task.tile_manager
         self.tiles_queue = tiles_queue
